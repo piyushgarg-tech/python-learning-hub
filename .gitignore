@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+
+.vscode/
+.idea/
+
+*.xlsx
+*.csv
+*.json
+*.npy
+
+.DS_Store
