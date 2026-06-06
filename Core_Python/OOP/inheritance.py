@@ -2,49 +2,131 @@
 Inheritance Quick Revision
 """
 
-# Single Inheritance
+# ==================================================
+# 1. Single Inheritance
+# ==================================================
+
+print("\n--- Single Inheritance ---")
+
 
 class Person:
 
     def __init__(self, name):
-        self.name = name
+        self.name = name  # Parent attribute
 
     def intro(self):
-        return f"I am {self.name}"
+        return f"I am {self.name}"  # Parent method
 
 
-class Student(Person):
+class Student(Person):  # Student inherits Person
 
     def __init__(self, name, course):
-        super().__init__(name)
-        self.course = course
+        super().__init__(name)  # Call parent constructor
+        self.course = course    # Child attribute
+
+    def student_info(self):
+        return f"{self.name} studies {self.course}"
 
 
 s = Student("Piyush", "Python")
 
-print(s.intro())                 # Parent Method
+print(s.intro())         # Inherited method
+print(s.student_info())  # Child method
 
-print(s.course)                  # Child Variable
 
+# ==================================================
+# 2. Method Overriding
+# ==================================================
 
-# Method Overriding
+print("\n--- Method Overriding ---")
+
 
 class Animal:
 
     def sound(self):
-        print("Animal Sound")
+        print("Animal makes a sound")
 
 
 class Dog(Animal):
 
-    def sound(self):
-        print("Bark")
+    def sound(self):  # Overrides parent method
+        print("Dog barks")
 
 
-Dog().sound()
+animal = Animal()
+dog = Dog()
+
+animal.sound()
+dog.sound()
 
 
-# Multilevel Inheritance
+# ==================================================
+# 3. Multilevel Inheritance
+# ==================================================
+
+print("\n--- Multilevel Inheritance ---")
+
+
+class Grandparent:
+
+    def house(self):
+        print("Grandparent's House")
+
+
+class Parent(Grandparent):  # Parent inherits Grandparent
+
+    def car(self):
+        print("Parent's Car")
+
+
+class Child(Parent):  # Child inherits Parent
+
+    def bike(self):
+        print("Child's Bike")
+
+
+c = Child()
+
+c.house()  # From Grandparent
+c.car()    # From Parent
+c.bike()   # Own method
+
+
+# ==================================================
+# 4. Multiple Inheritance
+# ==================================================
+
+print("\n--- Multiple Inheritance ---")
+
+
+class Father:
+
+    def driving(self):
+        print("Can Drive")
+
+
+class Mother:
+
+    def cooking(self):
+        print("Can Cook")
+
+
+class Child(Father, Mother):  # Inherits from both classes
+    pass
+
+
+child = Child()
+
+child.driving()  # From Father
+child.cooking()  # From Mother
+
+
+# ==================================================
+# 5. Method Resolution Order (MRO)
+# ==================================================
+
+print("\n--- Method Resolution Order ---")
+
 
 class A:
 
@@ -53,43 +135,42 @@ class A:
 
 
 class B(A):
+
+    def show(self):
+        print("Class B")
+
+
+class C(A):
+
+    def show(self):
+        print("Class C")
+
+
+class D(B, C):  # Multiple inheritance
     pass
 
 
-class C(B):
-    pass
+d = D()
+
+d.show()  # Python searches B before C
+
+print("\nMRO:")
+print(D.mro())  # Shows search order
 
 
-c = C()
+# ==================================================
+# 6. Useful Checks
+# ==================================================
 
-c.show()
+print("\n--- Useful Checks ---")
 
+# Checks if object belongs to a class
+print(isinstance(s, Student))
 
-# Multiple Inheritance
+# Checks inheritance relationship
+print(isinstance(s, Person))
 
-class Father:
+# Checks class inheritance
+print(issubclass(Student, Person))
 
-    def skill1(self):
-        print("Driving")
-
-
-class Mother:
-
-    def skill2(self):
-        print("Cooking")
-
-
-class Child(Father, Mother):
-    pass
-
-
-child = Child()
-
-child.skill1()
-
-child.skill2()
-
-
-# MRO
-
-print(Child.mro())
+print(issubclass(Dog, Animal))

@@ -5,33 +5,45 @@ Advanced OOP Quick Revision
 from abc import ABC, abstractmethod
 
 
-# Encapsulation
+# ==================================================
+# 1. Encapsulation
+# ==================================================
+
+print("\n--- Encapsulation ---")
+
 
 class Account:
 
     def __init__(self, balance):
-        self.__balance = balance
+        self.__balance = balance  # Private variable
 
     def deposit(self, amount):
         self.__balance += amount
 
     def get_balance(self):
-        return self.__balance
+        return self.__balance  # Controlled access
 
 
 acc = Account(1000)
 
 acc.deposit(500)
 
-print(acc.get_balance())          # 1500
+print(acc.get_balance())  # 1500
+
+# print(acc.__balance)  # Error
 
 
-# Property Decorator
+# ==================================================
+# 2. Property Decorator
+# ==================================================
+
+print("\n--- Property Decorator ---")
+
 
 class Employee:
 
     def __init__(self, salary):
-        self._salary = salary
+        self._salary = salary  # Protected variable
 
     @property
     def salary(self):
@@ -39,18 +51,24 @@ class Employee:
 
     @salary.setter
     def salary(self, value):
+
         if value > 0:
             self._salary = value
 
 
 e = Employee(50000)
 
-e.salary = 60000
+e.salary = 60000  # Calls setter automatically
 
-print(e.salary)
+print(e.salary)   # Calls getter automatically
 
 
-# Polymorphism
+# ==================================================
+# 3. Polymorphism
+# ==================================================
+
+print("\n--- Polymorphism ---")
+
 
 class Dog:
 
@@ -66,16 +84,21 @@ class Cat:
 
 for animal in [Dog(), Cat()]:
 
-    animal.sound()
+    animal.sound()  # Same method, different behavior
 
 
-# Abstraction
+# ==================================================
+# 4. Abstraction
+# ==================================================
+
+print("\n--- Abstraction ---")
+
 
 class Shape(ABC):
 
     @abstractmethod
     def area(self):
-        pass
+        pass  # Must be implemented
 
 
 class Square(Shape):
@@ -91,8 +114,15 @@ sq = Square(5)
 
 print(sq.area())
 
+# Shape()  # Error: abstract class
 
-# Operator Overloading
+
+# ==================================================
+# 5. Operator Overloading
+# ==================================================
+
+print("\n--- Operator Overloading ---")
+
 
 class Number:
 
@@ -107,10 +137,15 @@ n1 = Number(10)
 
 n2 = Number(20)
 
-print(n1 + n2)
+print(n1 + n2)  # Calls __add__()
 
 
-# Duck Typing
+# ==================================================
+# 6. Duck Typing
+# ==================================================
+
+print("\n--- Duck Typing ---")
+
 
 class Student:
 
@@ -127,3 +162,42 @@ class Teacher:
 for person in [Student(), Teacher()]:
 
     person.intro()
+
+# Python only cares that intro() exists
+
+
+# ==================================================
+# 7. Name Mangling
+# ==================================================
+
+print("\n--- Name Mangling ---")
+
+print(acc._Account__balance)
+
+# Python internally converts:
+# __balance
+# to
+# _Account__balance
+
+
+# ==================================================
+# 8. Quick Revision Notes
+# ==================================================
+
+# Encapsulation
+# Hides data using private variables
+
+# Property
+# Getter/Setter without explicit methods
+
+# Polymorphism
+# Same interface, different behavior
+
+# Abstraction
+# Defines what must be implemented
+
+# Operator Overloading
+# Customize operators (+, -, *, etc.)
+
+# Duck Typing
+# If object has required method, it works
