@@ -21,7 +21,7 @@ class Person:
 class Student(Person):  # Student inherits Person
 
     def __init__(self, name, course):
-        super().__init__(name)  # Call parent constructor
+        super().__init__(name)  # Call parent constructor     """Can aslo use -(Person.__init__(self,name))""""
         self.course = course    # Child attribute
 
     def student_info(self):
