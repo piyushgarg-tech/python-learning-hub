@@ -1,12 +1,10 @@
 __pycache__/
 *.pyc
 
+venv/
+.venv/
+
 .vscode/
 .idea/
-
-*.xlsx
-*.csv
-*.json
-*.npy
 
 .DS_Store
