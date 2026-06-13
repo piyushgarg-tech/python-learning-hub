@@ -1,7 +1,7 @@
 import cv2
 
 # Read Image
-image = cv2.imread('/home/akuma/Pictures/dragon.jpg')
+image = cv2.imread("sample_images/dragon.jpg")
 
 # Resizing According to aspect ratio
 scale = 50

@@ -1,39 +1,68 @@
+"""
+Amazon Price Tracker
+
+Tracks product prices from Amazon, stores price history
+in a CSV file, downloads product images, and compares
+current prices against user-defined target prices.
+"""
 import requests
 from bs4 import BeautifulSoup
 import csv, os
 from datetime import datetime
 
-folder_name = "Scraper"  # save files here
+folder_name = "data"  # save files here
 
 if not os.path.exists(folder_name):
     os.makedirs(folder_name)
 
 
-class PriceTracer:
+class PriceTracker:
 
     def __init__(self, url):
         self.url = url
         self.user_agent={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
-        self.response = requests.get(url = self.url , headers=self.user_agent).text
-        self.soup = BeautifulSoup(self.response, "lxml")
+        try:
+            response = requests.get(
+                self.url,
+                headers=self.user_agent,
+                timeout=10
+            )
+            response.raise_for_status()
+            self.soup = BeautifulSoup(response.text, "lxml")
 
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed: {e}")
+            self.soup = None
+    
     def product_title(self):
+        if self.soup is None:
+            return "Unable to fetch page"
+
         title = self.soup.find("span", {"id": "productTitle"})
+
         if title is not None:
             return title.text.strip()
         else:
             return "Tag Not Found"
 
     def product_price(self):
+        if self.soup is None:
+            return 0.0
+
         price = self.soup.find("span", {"class": "a-price-whole"})
+
         if price is not None:
             price_text = price.text.replace(",", "").strip()
             return float(price_text)
         else:
-            return 0.0  # return 0 if error
+            return 0.0
 
     def product_image_url(self):
-        image = self.soup.find("img", {"id": "landingImage"})  # product image
+        if self.soup is None:
+            return None
+
+        image = self.soup.find("img", {"id": "landingImage"})
+
         if image is not None:
             return image["src"]
         else:
@@ -41,13 +70,29 @@ class PriceTracer:
 
     def save_image(self):
         image_url = self.product_image_url()
+
+        if image_url is None:
+            return
+
         title = self.product_title()
-        clean_title = title[:20]
-        clean_title = clean_title.replace("/", "")
-        clean_title = clean_title.replace(":", "")
-        img_data = requests.get(image_url, headers=self.user_agent).content  # download image
-        with open(os.path.join(folder_name, clean_title + ".jpg"), "wb") as f:
-            f.write(img_data)  # save image
+
+        clean_title = "".join(
+            c for c in title[:30]
+            if c.isalnum() or c in (" ", "-", "_")
+        ).strip()
+
+        try:
+            img_data = requests.get(
+                image_url,
+                headers=self.user_agent,
+                timeout=10
+            ).content
+
+            with open(os.path.join(folder_name, clean_title + ".jpg"), "wb") as f:
+                f.write(img_data)
+
+        except requests.exceptions.RequestException as e:
+            print(f"Image download failed: {e}")
 
     def compare_and_save(self, target_price):
         title = self.product_title()
@@ -95,5 +140,5 @@ products = [
 # check all products
 if __name__ == "__main__":
     for product in products:
-        tracker = PriceTracer(product["url"])
+        tracker = PriceTracker(product["url"])
         tracker.compare_and_save(product["target"])
